@@ -24,21 +24,23 @@ class HomePage extends StatelessWidget {
 
   Widget createItem(BuildContext context, IconData icon, int tabPosition) {
     final double size = MediaQuery.of(context).size.width / 6;
+    final double padding = size / 4;
+    final double border = padding / 4;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
           shape: CircleBorder(),
-          padding: EdgeInsets.all(size / 4),
+          padding: EdgeInsets.all(padding),
           primary: Colors.blue,
-          onPrimary: Colors.red,
+          side: BorderSide(width: border, color: Colors.lightBlue.shade50)
         ),
         onPressed: () {
           onSetNavigationIndex(tabPosition);
         },
         child: Icon(
           icon,
-          color: Colors.white,
+          color: Colors.blue,
           size: size / 2,
         ),
       ),
