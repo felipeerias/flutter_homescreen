@@ -28,7 +28,8 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
-    var iconSize = screenHeight / 5;
+    var iconSize = screenHeight / 6;
+    var railSize = screenHeight / 5;
 
     return Scaffold(
       body: Row(
@@ -39,8 +40,9 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 backgroundColor: Colors.black12,
                 selectedIndex: _selectedIndex,
                 groupAlignment: -1.0,
-                minWidth: iconSize,
+                minWidth: railSize,
                 // leading widget?
+                // leading: Icon(Icons.house_outlined, size: iconSize),
                 // trailing widget does not expand to bottom
                 onDestinationSelected: (int index) {
                   setNavigationIndex(index);
@@ -82,7 +84,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
                 left: 0,
                 right: 0,
                 // This is the info widget with time, date, etc.
-                child: ClockWiddget(size: iconSize),
+                child: ClockWiddget(size: railSize),
               )
             ],
           ),

@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
     final double spacing = MediaQuery.of(context).size.width / 32;
     final double runSpacing = spacing / 2;
     return Container(
-        color: Colors.white,
+        color: Colors.lightBlue.shade50,
         constraints: BoxConstraints.expand(),
         alignment: Alignment.center,
         child: Wrap(
@@ -35,15 +35,15 @@ class HomePage extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           shape: CircleBorder(),
           padding: EdgeInsets.all(padding),
-          primary: Colors.blue,
-          side: BorderSide(width: border, color: Colors.lightBlue.shade50)
+          primary: Colors.lightBlue.shade400,
+            side: BorderSide(width: border, color: Colors.lightBlue.shade400)
         ),
         onPressed: () {
           onSetNavigationIndex(tabPosition);
         },
         child: Icon(
           icon,
-          color: Colors.blue,
+          color: Colors.lightBlue.shade800,
           size: size / 2,
         ),
       ),

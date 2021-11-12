@@ -6,7 +6,7 @@ class HVACPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.yellow,
+      color: Colors.lime.shade50,
       constraints: BoxConstraints.expand(),
       alignment: Alignment.center,
       child: Text(

@@ -7,7 +7,7 @@ class MediaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.lightBlue,
+      color: Colors.deepPurple.shade50,
       constraints: BoxConstraints.expand(),
       alignment: Alignment.center,
       child: Text(
