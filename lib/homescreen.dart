@@ -17,6 +17,12 @@ class Homescreen extends StatefulWidget {
 class _HomescreenState extends State<Homescreen> {
   int _selectedIndex = 0;
 
+  setNavigationIndex(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
@@ -35,9 +41,7 @@ class _HomescreenState extends State<Homescreen> {
                 // leading widget?
                 // trailing widget does not expand to bottom
                 onDestinationSelected: (int index) {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
+                  setNavigationIndex(index);
                 },
                 selectedIconTheme: IconTheme.of(context).copyWith(
                   size: iconSize,
@@ -93,7 +97,7 @@ class _HomescreenState extends State<Homescreen> {
   Widget _childForIndex(int selectedIndex) {
     switch (selectedIndex) {
       case 0:
-        return HomePage();
+        return HomePage(onSetNavigationIndex: setNavigationIndex);
       case 1:
         return DashboardPage();
       case 2:
