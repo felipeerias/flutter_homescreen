@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 
 class MediaPage extends StatelessWidget {
-  // TODO placeholder
+
+  const MediaPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'Media',
-      style: Theme.of(context).textTheme.headline1,
+    return Container(
+      color: Colors.lightBlue,
+      constraints: BoxConstraints.expand(),
+      alignment: Alignment.center,
+      child: Text(
+        'Media',
+        style: Theme.of(context).textTheme.headline1,
+        ),
     );
   }
 }

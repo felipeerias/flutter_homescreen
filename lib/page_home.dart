@@ -10,7 +10,10 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final double spacing = MediaQuery.of(context).size.width / 32;
     final double runSpacing = spacing / 2;
-    return Center(
+    return Container(
+        color: Colors.white,
+        constraints: BoxConstraints.expand(),
+        alignment: Alignment.center,
         child: Wrap(
       spacing: spacing,
       runSpacing: runSpacing,

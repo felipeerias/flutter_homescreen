@@ -14,11 +14,13 @@ class Homescreen extends StatefulWidget {
   _HomescreenState createState() => _HomescreenState();
 }
 
-class _HomescreenState extends State<Homescreen> {
+class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
   int _selectedIndex = 0;
+  int _previousIndex = 0;
 
   setNavigationIndex(int index) {
     setState(() {
+      _previousIndex = _selectedIndex;
       _selectedIndex = index;
     });
   }
@@ -87,7 +89,37 @@ class _HomescreenState extends State<Homescreen> {
           const VerticalDivider(thickness: 1, width: 1),
           // This is the main content.
           Expanded(
-            child: Center(child: _childForIndex(_selectedIndex)),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              reverseDuration: const Duration(milliseconds: 500),
+              switchInCurve: Curves.easeInOut,
+              switchOutCurve: Curves.easeInOut,
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                if (child.key != ValueKey(_selectedIndex)) {
+                  return FadeTransition(
+                    opacity:
+                        Tween<double>(begin: 1.0, end: 1.0).animate(animation),
+                    child: child,
+                  );
+                }
+                Offset beginOffset = new Offset(
+                    0.0, (_selectedIndex > _previousIndex ? 1.0 : -1.0));
+                return SlideTransition(
+                  position: Tween<Offset>(begin: beginOffset, end: Offset.zero)
+                      .animate(animation),
+                  child: FadeTransition(
+                    opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: Interval(0.5, 1.0),
+                      ),
+                    ),
+                    child: child,
+                  ),
+                );
+              },
+              child: _childForIndex(_selectedIndex),
+            ),
           )
         ],
       ),
@@ -97,50 +129,17 @@ class _HomescreenState extends State<Homescreen> {
   Widget _childForIndex(int selectedIndex) {
     switch (selectedIndex) {
       case 0:
-        return HomePage(onSetNavigationIndex: setNavigationIndex);
+        return HomePage(
+            key: ValueKey(selectedIndex),
+            onSetNavigationIndex: setNavigationIndex);
       case 1:
-        return DashboardPage();
+        return DashboardPage(key: ValueKey(selectedIndex));
       case 2:
-        return HVACPage();
+        return HVACPage(key: ValueKey(selectedIndex));
       case 3:
-        return MediaPage();
+        return MediaPage(key: ValueKey(selectedIndex));
       default:
         return Text('Undefined');
     }
   }
 }
-
-/*
-ElevatedButton(
-                child: const Text('Open app'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SecondRoute()),
-                  );
-                },
-              ),
-
-class SecondRoute extends StatelessWidget {
-  const SecondRoute({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Second Route"),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Go back!'),
-        ),
-      ),
-    );
-  }
-}
-
-*/
