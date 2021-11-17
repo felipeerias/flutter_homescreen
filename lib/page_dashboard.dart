@@ -58,10 +58,7 @@ class DashboardPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(
-                'RPM',
-                style: Theme.of(context).textTheme.headline4,
-              ),
+              _RPMWidget(),
               Text(
                 'Fuel',
                 style: Theme.of(context).textTheme.headline4,
@@ -70,6 +67,27 @@ class DashboardPage extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+// ignore: unused_element
+class _RPMWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Icon(Icons.fastfood),
+        Container(
+          height: 20,
+          width: 70,
+          child: LinearProgressIndicator(
+            value: 0.75,
+            semanticsLabel: 'Linear progress indicator',
+          ),
+        ),
+      ],
     );
   }
 }
