@@ -1,8 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 class HVACPage extends StatelessWidget {
-
   const HVACPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -15,6 +16,10 @@ class HVACPage extends StatelessWidget {
 }
 
 class _TemperatureSelector extends StatefulWidget {
+double referenceFontSize = 24;
+
+  _TemperatureSelector({Key? key, referenceFontSize}) : super(key: key);
+
   @override
   _TemperatureSelectorState createState() => _TemperatureSelectorState();
 }
@@ -31,6 +36,16 @@ class _TemperatureSelectorState extends State<_TemperatureSelector> {
           minValue: 18,
           maxValue: 25,
           onChanged: (value) => setState(() => _currentValue = value),
+          textStyle: DefaultTextStyle.of(context).style.copyWith(
+                color: Colors.teal.shade200,
+                fontSize: widget.referenceFontSize,
+              ),
+          selectedTextStyle: DefaultTextStyle.of(context).style.copyWith(
+                color: Colors.white,
+                fontSize: widget.referenceFontSize * 1.5,
+              ),
+          itemHeight: widget.referenceFontSize * 3,
+          itemWidth: widget.referenceFontSize * 6,
         ),
       ],
     );
@@ -80,109 +95,156 @@ bool selected = true; // Get from API
 class _MyHomePageState extends State<MainPage> {
   final double fanSpeed = 20;
 
-  Widget titleSection = Container(
-    padding: const EdgeInsets.all(32),
-    child: Row(
-      children: [
-        Expanded(flex: 2, child: const HVACFanSpeed()),
-        Image.asset('images/HMI_HVAC_Fan_Icon.png',
-            width: 100, height: 100, fit: BoxFit.cover),
-      ],
-    ),
-  );
+  Widget _buildLayout(BuildContext context, BoxConstraints constraints) {
+    // describe the layout in terms of fractions of the container size
+    double mainDimension = max(constraints.maxWidth, constraints.maxHeight);
+    double minDimension = min(constraints.maxWidth, constraints.maxHeight);
+    double iconSize = mainDimension / 12.0;
+    double largeIconSize = mainDimension / 8.0;
+    double spacingSize = minDimension / 48.0;
+    double buttonWidth = constraints.maxWidth / 6.0;
+    double buttonHeight = constraints.maxHeight / 6.0;
+    double defaultFontSize = constraints.maxHeight / 24.0;
+    TextStyle buttonTextStyle = DefaultTextStyle.of(context).style.copyWith(
+          color: Colors.white,
+          fontSize: defaultFontSize,
+        );
 
-  Widget rightSeat = Container(
-    padding: const EdgeInsets.all(32),
-    child: Column(
-      children: [
-        IconButton(
-          iconSize: 100.0,
-          icon: Image.asset(selected ? chairOn : chairOff,
-              width: 100, height: 100, fit: BoxFit.cover),
-          onPressed: () {
-            selected = !selected;
-          },
-        ),
-        _TemperatureSelector(),
-      ],
-    ),
-  );
+    Widget fanSpeedControl = Container(
+      padding: EdgeInsets.symmetric(
+        vertical: spacingSize,
+        horizontal: 3 * spacingSize,
+      ),
+      child: Row(
+        children: [
+          Expanded(flex: 4, child: const HVACFanSpeed()),
+          SizedBox(width: spacingSize),
+          Expanded(
+              flex: 1,
+              child: Image.asset('images/HMI_HVAC_Fan_Icon.png',
+                  width: iconSize, height: iconSize, fit: BoxFit.contain)),
+        ],
+      ),
+    );
 
-  Widget leftSeat = Container(
-    padding: const EdgeInsets.all(32),
-    child: Column(
-      children: [
-        Image.asset('images/HMI_HVAC_Right_Chair_ON.png',
-            width: 100, height: 100, fit: BoxFit.cover),
-        _TemperatureSelector()
-      ],
-    ),
-  );
-
-  Widget centerView = Container(
-    padding: const EdgeInsets.all(32),
-    child: Column(
-      children: [
-        Container(
-          width: 140,
-          height: 100,
-          margin: const EdgeInsets.all(15.0),
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.green),
-              borderRadius: BorderRadius.circular(20)),
-          child: OutlinedButton(
+    Widget rightSeat = Container(
+      padding: EdgeInsets.all(spacingSize),
+      child: Column(
+        children: [
+          IconButton(
+            iconSize: largeIconSize,
+            icon: Image.asset(selected ? chairOn : chairOff,
+                width: largeIconSize,
+                height: largeIconSize,
+                fit: BoxFit.contain),
             onPressed: () {
-              // Respond to button press
+              selected = !selected;
             },
-            child: Text("A / C"),
           ),
-        ),
-        Container(
-          width: 140,
-          height: 100,
-          margin: const EdgeInsets.all(15.0),
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.green),
-              borderRadius: BorderRadius.circular(20)),
-          child: OutlinedButton(
-            onPressed: () {
-              // Respond to button press
-            },
-            child: Text("Auto"),
+          SizedBox(height: spacingSize),
+          _TemperatureSelector(
+            referenceFontSize: defaultFontSize,
           ),
-        ),
-        Container(
-          width: 140,
-          height: 100,
-          margin: const EdgeInsets.all(15.0),
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.green),
-              borderRadius: BorderRadius.circular(20)),
-          child: OutlinedButton(
+        ],
+      ),
+    );
+
+    Widget leftSeat = Container(
+      padding: EdgeInsets.all(spacingSize),
+      child: Column(
+        children: [
+          Image.asset('images/HMI_HVAC_Right_Chair_ON.png',
+              width: largeIconSize, height: largeIconSize, fit: BoxFit.contain),
+          SizedBox(height: spacingSize),
+          _TemperatureSelector(
+            referenceFontSize: defaultFontSize,
+          ),
+        ],
+      ),
+    );
+
+    Widget centerView = Container(
+      padding: EdgeInsets.all(spacingSize),
+      child: Column(
+        children: [
+          Container(
+            width: buttonWidth,
+            height: buttonHeight,
+            margin: EdgeInsets.all(spacingSize),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.green),
+                borderRadius: BorderRadius.circular(20)),
+            child: OutlinedButton(
               onPressed: () {
                 // Respond to button press
               },
-              child: Image.asset('images/HMI_HVAC_Circulation_Inactive.png',
-                  width: 100, height: 100, fit: BoxFit.cover)),
-        ),
+              child: Text("A / C", style: buttonTextStyle),
+            ),
+          ),
+          Container(
+            width: buttonWidth,
+            height: buttonHeight,
+            margin: EdgeInsets.all(spacingSize),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.green),
+                borderRadius: BorderRadius.circular(20)),
+            child: OutlinedButton(
+              onPressed: () {
+                // Respond to button press
+              },
+              child: Text("Auto", style: buttonTextStyle),
+            ),
+          ),
+          Container(
+            width: buttonWidth,
+            height: buttonHeight,
+            margin: EdgeInsets.all(spacingSize),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.green),
+                borderRadius: BorderRadius.circular(20)),
+            child: OutlinedButton(
+                onPressed: () {
+                  // Respond to button press
+                },
+                child: Image.asset('images/HMI_HVAC_Circulation_Inactive.png',
+                    width: iconSize, height: iconSize, fit: BoxFit.contain)),
+          ),
+        ],
+      ),
+    );
+    Widget actions = Container(
+      padding: EdgeInsets.all(spacingSize),
+      child: Column(
+        children: [
+          Image.asset('images/HMI_HVAC_AirDown_Inactive.png',
+              width: iconSize, height: iconSize, fit: BoxFit.contain),
+          SizedBox(height: spacingSize),
+          Image.asset('images/HMI_HVAC_AirUp_Inactive.png',
+              width: iconSize, height: iconSize, fit: BoxFit.contain),
+          SizedBox(height: spacingSize),
+          Image.asset('images/HMI_HVAC_Front_Inactive.png',
+              width: iconSize, height: iconSize, fit: BoxFit.contain),
+          SizedBox(height: spacingSize),
+          Image.asset('images/HMI_HVAC_Rear_Active.png',
+              width: iconSize, height: iconSize, fit: BoxFit.contain),
+        ],
+        
+      ),
+    );
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        fanSpeedControl,
+        Row(children: [
+          Expanded(flex: 1, child: rightSeat),
+          Expanded(flex: 1, child: centerView),
+          Expanded(flex: 1, child: leftSeat),
+          Expanded(flex: 1, child: actions)
+        ])
       ],
-    ),
-  );
-  Widget actions = Container(
-    padding: const EdgeInsets.all(32),
-    child: Column(
-      children: [
-        Image.asset('images/HMI_HVAC_AirDown_Inactive.png',
-            width: 100, height: 100, fit: BoxFit.cover),
-        Image.asset('images/HMI_HVAC_AirUp_Inactive.png',
-            width: 100, height: 100, fit: BoxFit.cover),
-        Image.asset('images/HMI_HVAC_Front_Inactive.png',
-            width: 100, height: 100, fit: BoxFit.cover),
-        Image.asset('images/HMI_HVAC_Rear_Active.png',
-            width: 100, height: 100, fit: BoxFit.cover),
-      ],
-    ),
-  );
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,18 +255,8 @@ class _MyHomePageState extends State<MainPage> {
                 end: Alignment.bottomRight,
                 colors: [Colors.black, Colors.teal.shade900])),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              titleSection,
-              Row(children: [
-                Expanded(flex: 2, child: rightSeat),
-                Expanded(flex: 2, child: centerView),
-                Expanded(flex: 2, child: leftSeat),
-                Expanded(flex: 2, child: actions)
-              ])
-            ],
-          ),
-        ));
+            child: LayoutBuilder(
+          builder: _buildLayout,
+        )));
   }
 }
