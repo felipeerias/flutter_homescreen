@@ -65,7 +65,13 @@ class _HVACFanSpeedState extends State<HVACFanSpeed> {
 
   @override
   Widget build(BuildContext context) {
-    return Slider(
+    return SliderTheme(
+      data: SliderThemeData(
+        thumbColor: Colors.greenAccent.shade700,
+        activeTrackColor: Colors.greenAccent.shade700,
+        inactiveTrackColor: Colors.blueGrey.shade200,
+      ),
+      child: Slider(
       value: _currentSliderValue,
       min: 0,
       max: 300,
@@ -75,6 +81,7 @@ class _HVACFanSpeedState extends State<HVACFanSpeed> {
           _currentSliderValue = value;
         });
       },
+    ),
     );
   }
 }
@@ -251,9 +258,9 @@ class _HVACPageState extends State<HVACPage> {
     return Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Colors.black, Colors.teal.shade900])),
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [Colors.blueGrey.shade900, Colors.grey.shade900])),
         child: Center(
             child: LayoutBuilder(
           builder: _buildLayout,

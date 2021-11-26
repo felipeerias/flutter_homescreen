@@ -9,7 +9,7 @@ class MediaPage extends StatelessWidget {
     // describe the layout in terms of fractions of the container size
     double mainDimension = max(constraints.maxWidth, constraints.maxHeight);
     //double minDimension = min(constraints.maxWidth, constraints.maxHeight);
-    double iconSize = mainDimension / 16.0;
+    double iconSize = mainDimension / 12.0;
 
     return Container(
       color: Colors.blueGrey.shade900,

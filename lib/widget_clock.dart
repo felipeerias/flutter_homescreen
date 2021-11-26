@@ -5,8 +5,10 @@ import 'package:intl/intl.dart';
 
 class ClockWiddget extends StatefulWidget {
   final double size;
+  final Color textColor;
 
-  const ClockWiddget({Key? key, required this.size}) : super(key: key);
+  const ClockWiddget({Key? key, required this.size, required this.textColor})
+      : super(key: key);
 
   @override
   _ClockWiddgetState createState() => _ClockWiddgetState();
@@ -15,6 +17,7 @@ class ClockWiddget extends StatefulWidget {
 class _ClockWiddgetState extends State<ClockWiddget> {
   late Timer _timer;
   DateTime _now = DateTime.now();
+
 
   @override
   void initState() {
@@ -38,6 +41,10 @@ class _ClockWiddgetState extends State<ClockWiddget> {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle? textStyle = Theme.of(context)
+        .textTheme
+        .headline2
+        ?.copyWith(color: widget.textColor);
     return Container(
       height: widget.size,
       padding: EdgeInsets.all(16.0),
@@ -54,7 +61,7 @@ class _ClockWiddgetState extends State<ClockWiddget> {
             fit: BoxFit.contain,
             child: Text(
               DateFormat('EEEE').format(_now),
-              style: Theme.of(context).textTheme.headline2,
+              style: textStyle,
             ),
           ),
           const Divider(thickness: 1),
@@ -62,7 +69,7 @@ class _ClockWiddgetState extends State<ClockWiddget> {
             fit: BoxFit.contain,
             child: Text(
               DateFormat.jm().format(_now),
-              style: Theme.of(context).textTheme.headline2,
+              style: textStyle,
             ),
           ),
         ],

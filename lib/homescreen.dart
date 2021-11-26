@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_homescreen/page_dashboard.dart';
 import 'package:flutter_homescreen/page_home.dart';
 import 'package:flutter_homescreen/page_hvac.dart';
 import 'package:flutter_homescreen/page_media.dart';
 import 'package:flutter_homescreen/widget_clock.dart';
+
+enum PageIndex { home, dashboard, hvac, media, demo3d }
 
 class Homescreen extends StatefulWidget {
   Homescreen({Key? key, required this.title}) : super(key: key);
@@ -25,68 +29,113 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
     });
   }
 
+  Widget _childForIndex(int selectedIndex) {
+    switch (PageIndex.values[selectedIndex]) {
+      case PageIndex.home:
+        return HomePage(
+            key: ValueKey(selectedIndex),
+            onSetNavigationIndex: setNavigationIndex);
+      case PageIndex.dashboard:
+        return DashboardPage(key: ValueKey(selectedIndex));
+      case PageIndex.hvac:
+        return HVACPageContainer(key: ValueKey(selectedIndex));
+      case PageIndex.media:
+        return MediaPage(key: ValueKey(selectedIndex));
+      case PageIndex.demo3d:
+        return Text('3D demo');
+      default:
+        return Text('Undefined');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var iconSize = screenHeight / 6;
-    var railSize = screenHeight / 5;
+    return Container(
+        color: Colors.deepPurple.shade50,
+        child: Center(
+            child: LayoutBuilder(
+          builder: _buildLayout,
+        )));
+  }
+
+  Widget _buildLayout(BuildContext context, BoxConstraints constraints) {
+    var iconSize = constraints.maxHeight / (PageIndex.values.length + 2);
+    var railSize = constraints.maxHeight / (PageIndex.values.length + 1);
 
     return Scaffold(
       body: Row(
         children: <Widget>[
-          Stack(
-            children: [
-              NavigationRail(
-                backgroundColor: Colors.black12,
-                selectedIndex: _selectedIndex,
-                groupAlignment: -1.0,
-                minWidth: railSize,
-                // leading widget?
-                // leading: Icon(Icons.house_outlined, size: iconSize),
-                // trailing widget does not expand to bottom
-                onDestinationSelected: (int index) {
-                  setNavigationIndex(index);
-                },
-                selectedIconTheme: IconTheme.of(context).copyWith(
-                  size: iconSize,
-                  color: Theme.of(context).accentColor,
+          Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                  Colors.blueGrey.shade800,
+                  Colors.blueGrey.shade900
+                ])),
+            child: Stack(
+              children: [
+                NavigationRail(
+                  backgroundColor: Colors.transparent,
+                  selectedIndex: _selectedIndex,
+                  groupAlignment: -1.0,
+                  minWidth: railSize,
+                  // leading widget?
+                  // leading: Icon(Icons.house_outlined, size: iconSize),
+                  // trailing widget does not expand to bottom
+                  onDestinationSelected: (int index) {
+                    setNavigationIndex(index);
+                  },
+                  selectedIconTheme: IconTheme.of(context).copyWith(
+                    size: iconSize,
+                    color: Colors.orangeAccent.shade100,
+                  ),
+                  unselectedIconTheme: IconTheme.of(context).copyWith(
+                    size: iconSize,
+                    color: Colors.blueGrey.shade400,
+                  ),
+                  labelType: NavigationRailLabelType.none,
+                  destinations: <NavigationRailDestination>[
+                    NavigationRailDestination(
+                      icon: Icon(Icons.house),
+                      selectedIcon: Icon(Icons.house),
+                      label: Text('Home'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.drive_eta),
+                      selectedIcon: Icon(Icons.drive_eta),
+                      label: Text('Dashboard'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.thermostat),
+                      selectedIcon: Icon(Icons.thermostat),
+                      label: Text('HVAC'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.music_note),
+                      selectedIcon: Icon(Icons.music_note),
+                      label: Text('Media'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.view_in_ar),
+                      selectedIcon: Icon(Icons.view_in_ar),
+                      label: Text('3D example'),
+                    ),
+                  ],
                 ),
-                unselectedIconTheme: IconTheme.of(context).copyWith(
-                  size: iconSize,
-                  color: Theme.of(context).unselectedWidgetColor,
-                ),
-                labelType: NavigationRailLabelType.none,
-                destinations: <NavigationRailDestination>[
-                  NavigationRailDestination(
-                    icon: Icon(Icons.house_outlined),
-                    selectedIcon: Icon(Icons.house),
-                    label: Text('Home'),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  // This is the info widget with time, date, etc.
+                  child: ClockWiddget(
+                    size: railSize,
+                    textColor: Colors.blueGrey.shade100,
                   ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.drive_eta_outlined),
-                    selectedIcon: Icon(Icons.drive_eta),
-                    label: Text('Dashboard'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.thermostat_outlined),
-                    selectedIcon: Icon(Icons.thermostat),
-                    label: Text('HVAC'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.music_note_outlined),
-                    selectedIcon: Icon(Icons.music_note),
-                    label: Text('Media'),
-                  ),
-                ],
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                // This is the info widget with time, date, etc.
-                child: ClockWiddget(size: railSize),
-              )
-            ],
+                )
+              ],
+            ),
           ),
           const VerticalDivider(thickness: 1, width: 1),
           // This is the main content.
@@ -126,22 +175,5 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
         ],
       ),
     );
-  }
-
-  Widget _childForIndex(int selectedIndex) {
-    switch (selectedIndex) {
-      case 0:
-        return HomePage(
-            key: ValueKey(selectedIndex),
-            onSetNavigationIndex: setNavigationIndex);
-      case 1:
-        return DashboardPage(key: ValueKey(selectedIndex));
-      case 2:
-        return HVACPageContainer(key: ValueKey(selectedIndex));
-      case 3:
-        return MediaPage(key: ValueKey(selectedIndex));
-      default:
-        return Text('Undefined');
-    }
   }
 }
