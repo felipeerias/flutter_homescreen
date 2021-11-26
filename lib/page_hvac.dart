@@ -3,20 +3,20 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-class HVACPage extends StatelessWidget {
-  const HVACPage({Key? key}) : super(key: key);
+class HVACPageContainer extends StatelessWidget {
+  const HVACPageContainer({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints.expand(),
       alignment: Alignment.center,
-      child: const MainPage(title: 'AGL - Flutter HVAC'),
+      child: const HVACPage(title: 'AGL - Flutter HVAC'),
     );
   }
 }
 
 class _TemperatureSelector extends StatefulWidget {
-double referenceFontSize = 24;
+final double referenceFontSize = 24;
 
   _TemperatureSelector({Key? key, referenceFontSize}) : super(key: key);
 
@@ -79,20 +79,20 @@ class _HVACFanSpeedState extends State<HVACFanSpeed> {
   }
 }
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key, required this.title}) : super(key: key);
+class HVACPage extends StatefulWidget {
+  const HVACPage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  State<MainPage> createState() => _MyHomePageState();
+  State<HVACPage> createState() => _HVACPageState();
 }
 
 String chairOn = 'images/HMI_HVAC_Left_Chair_ON.png';
 String chairOff = 'images/HMI_HVAC_Right_Chair_ON.png';
 bool selected = true; // Get from API
 
-class _MyHomePageState extends State<MainPage> {
+class _HVACPageState extends State<HVACPage> {
   final double fanSpeed = 20;
 
   Widget _buildLayout(BuildContext context, BoxConstraints constraints) {

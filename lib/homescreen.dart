@@ -137,7 +137,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
       case 1:
         return DashboardPage(key: ValueKey(selectedIndex));
       case 2:
-        return HVACPage(key: ValueKey(selectedIndex));
+        return HVACPageContainer(key: ValueKey(selectedIndex));
       case 3:
         return MediaPage(key: ValueKey(selectedIndex));
       default:
