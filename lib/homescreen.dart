@@ -136,7 +136,11 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
               ],
             ),
           ),
-          const VerticalDivider(thickness: 1, width: 1),
+          VerticalDivider(
+            thickness: 1,
+            width: 1,
+            color: Colors.grey.shade900,
+          ),
           // This is the main content.
           Expanded(
             child: AnimatedSwitcher(

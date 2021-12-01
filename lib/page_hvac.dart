@@ -102,7 +102,7 @@ String circulationInactive = 'images/HMI_HVAC_Circulation_Inactive.png';
 // Get from API
 bool leftChairSelected = true;
 bool rightChairSelected = true;
-bool ACSelected = true;
+bool acSelected = true;
 bool autoSelected = true;
 bool circulationSelected = true;
 
@@ -192,18 +192,18 @@ class _HVACPageState extends State<HVACPage> {
             margin: EdgeInsets.all(sizeHelper.defaultPadding),
             decoration: BoxDecoration(
                 border: Border.all(
-                  color: ACSelected ? Colors.green : Colors.grey,
-                ),
-                borderRadius: BorderRadius.circular(20)),
+                  color: acSelected ? Colors.green : Colors.grey,
+              ),
+            ),
             child: OutlinedButton(
               onPressed: () {
                 setState(() {
-                  ACSelected = !ACSelected;
+                  acSelected = !acSelected;
                 });
               },
               child: Text(
                 "A / C",
-                style: ACSelected ? buttonTextStyle : unselectedButtonTextStyle,
+                style: acSelected ? buttonTextStyle : unselectedButtonTextStyle,
               ),
             ),
           ),
@@ -215,7 +215,7 @@ class _HVACPageState extends State<HVACPage> {
                 border: Border.all(
                   color: autoSelected ? Colors.green : Colors.grey,
                 ),
-                borderRadius: BorderRadius.circular(20)),
+            ),
             child: OutlinedButton(
               onPressed: () {
                 setState(() {
@@ -237,7 +237,7 @@ class _HVACPageState extends State<HVACPage> {
                 border: Border.all(
                   color: circulationSelected ? Colors.green : Colors.grey,
                 ),
-                borderRadius: BorderRadius.circular(20)),
+            ),
             child: OutlinedButton(
                 onPressed: () {
                   setState(() {
