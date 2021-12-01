@@ -53,6 +53,7 @@ flutter:
     - images/HMI_HVAC_Right_Chair_ON.png
     - images/HMI_HVAC_Left_Chair_OFF.png
     - images/HMI_HVAC_Right_Chair_OFF.png
+    - images/HMI_HVAC_Circulation_Active.png
     - images/HMI_HVAC_Circulation_Inactive.png
     - images/HMI_HVAC_Rear_Active.png
     - images/HMI_HVAC_Front_Inactive.png

@@ -92,9 +92,19 @@ class HVACPage extends StatefulWidget {
   State<HVACPage> createState() => _HVACPageState();
 }
 
-String chairOn = 'images/HMI_HVAC_Left_Chair_ON.png';
-String chairOff = 'images/HMI_HVAC_Right_Chair_ON.png';
-bool selected = true; // Get from API
+String leftChairOn = 'images/HMI_HVAC_Left_Chair_ON.png';
+String leftChairOff = 'images/HMI_HVAC_Left_Chair_OFF.png';
+String rightChairOn = 'images/HMI_HVAC_Right_Chair_ON.png';
+String rightChairOff = 'images/HMI_HVAC_Right_Chair_OFF.png';
+String circulationActive = 'images/HMI_HVAC_Circulation_Active.png';
+String circulationInactive = 'images/HMI_HVAC_Circulation_Inactive.png';
+
+// Get from API
+bool leftChairSelected = true;
+bool rightChairSelected = true;
+bool ACSelected = true;
+bool autoSelected = true;
+bool circulationSelected = true;
 
 class _HVACPageState extends State<HVACPage> {
   final double fanSpeed = 20;
@@ -105,6 +115,9 @@ class _HVACPageState extends State<HVACPage> {
     TextStyle buttonTextStyle = DefaultTextStyle.of(context).style.copyWith(
           fontSize: sizeHelper.baseFontSize,
         );
+    TextStyle unselectedButtonTextStyle = buttonTextStyle.copyWith(
+      color: Colors.grey,
+    );
 
     Widget fanSpeedControl = Container(
       padding: EdgeInsets.symmetric(
@@ -131,12 +144,14 @@ class _HVACPageState extends State<HVACPage> {
         children: [
           IconButton(
             iconSize: sizeHelper.largeIconSize,
-            icon: Image.asset(selected ? chairOn : chairOff,
+            icon: Image.asset(leftChairSelected ? leftChairOn : leftChairOff,
                 width: sizeHelper.largeIconSize,
                 height: sizeHelper.largeIconSize,
                 fit: BoxFit.contain),
             onPressed: () {
-              selected = !selected;
+              setState(() {
+                leftChairSelected = !leftChairSelected;
+              });
             },
           ),
           SizedBox(height: sizeHelper.defaultPadding),
@@ -149,10 +164,18 @@ class _HVACPageState extends State<HVACPage> {
       padding: EdgeInsets.all(sizeHelper.defaultPadding),
       child: Column(
         children: [
-          Image.asset('images/HMI_HVAC_Right_Chair_ON.png',
-              width: sizeHelper.largeIconSize,
-              height: sizeHelper.largeIconSize,
-              fit: BoxFit.contain),
+          IconButton(
+            iconSize: sizeHelper.largeIconSize,
+            icon: Image.asset(rightChairSelected ? rightChairOn : rightChairOff,
+                width: sizeHelper.largeIconSize,
+                height: sizeHelper.largeIconSize,
+                fit: BoxFit.contain),
+            onPressed: () {
+              setState(() {
+                rightChairSelected = !rightChairSelected;
+              });
+            },
+          ),
           SizedBox(height: sizeHelper.defaultPadding),
           _TemperatureSelector(),
         ],
@@ -168,13 +191,20 @@ class _HVACPageState extends State<HVACPage> {
             height: sizeHelper.defaultButtonHeight,
             margin: EdgeInsets.all(sizeHelper.defaultPadding),
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.green),
+                border: Border.all(
+                  color: ACSelected ? Colors.green : Colors.grey,
+                ),
                 borderRadius: BorderRadius.circular(20)),
             child: OutlinedButton(
               onPressed: () {
-                // Respond to button press
+                setState(() {
+                  ACSelected = !ACSelected;
+                });
               },
-              child: Text("A / C", style: buttonTextStyle),
+              child: Text(
+                "A / C",
+                style: ACSelected ? buttonTextStyle : unselectedButtonTextStyle,
+              ),
             ),
           ),
           Container(
@@ -182,13 +212,21 @@ class _HVACPageState extends State<HVACPage> {
             height: sizeHelper.defaultButtonHeight,
             margin: EdgeInsets.all(sizeHelper.defaultPadding),
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.green),
+                border: Border.all(
+                  color: autoSelected ? Colors.green : Colors.grey,
+                ),
                 borderRadius: BorderRadius.circular(20)),
             child: OutlinedButton(
               onPressed: () {
-                // Respond to button press
+                setState(() {
+                  autoSelected = !autoSelected;
+                });
               },
-              child: Text("Auto", style: buttonTextStyle),
+              child: Text(
+                "Auto",
+                style:
+                    autoSelected ? buttonTextStyle : unselectedButtonTextStyle,
+              ),
             ),
           ),
           Container(
@@ -196,13 +234,20 @@ class _HVACPageState extends State<HVACPage> {
             height: sizeHelper.defaultButtonHeight,
             margin: EdgeInsets.all(sizeHelper.defaultPadding),
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.green),
+                border: Border.all(
+                  color: circulationSelected ? Colors.green : Colors.grey,
+                ),
                 borderRadius: BorderRadius.circular(20)),
             child: OutlinedButton(
                 onPressed: () {
-                  // Respond to button press
+                  setState(() {
+                    circulationSelected = !circulationSelected;
+                  });
                 },
-                child: Image.asset('images/HMI_HVAC_Circulation_Inactive.png',
+                child: Image.asset(
+                    circulationSelected
+                        ? circulationActive
+                        : circulationInactive,
                     width: sizeHelper.defaultIconSize,
                     height: sizeHelper.defaultIconSize,
                     fit: BoxFit.contain)),
