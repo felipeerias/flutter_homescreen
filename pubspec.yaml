@@ -58,6 +58,8 @@ flutter:
     - images/HMI_HVAC_Front_Inactive.png
     - images/HMI_HVAC_AirDown_Inactive.png
     - images/HMI_HVAC_AirUp_Inactive.png
+    - images/HMI_Dashboard_Car_720.png
+    - images/HMI_Dashboard_Car_1080.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
