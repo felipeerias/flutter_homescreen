@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_homescreen/layout_size_helper.dart';
 
 class HomePage extends StatelessWidget {
   final Function(int index) onSetNavigationIndex;
@@ -8,35 +9,34 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double spacing = MediaQuery.of(context).size.width / 32;
-    final double runSpacing = spacing / 2;
+    var themeHelper = LayoutSizeHelper(context);
     return Container(
         color: Colors.lightBlue.shade50,
         constraints: BoxConstraints.expand(),
         alignment: Alignment.center,
         child: Wrap(
-      spacing: spacing,
-      runSpacing: runSpacing,
-      children: <Widget>[
-        createItem(context, Icons.drive_eta, 1),
-        createItem(context, Icons.thermostat, 2),
-        createItem(context, Icons.music_note, 3)
-      ],
-    ));
+          spacing: themeHelper.largePadding,
+          runSpacing: themeHelper.largePadding,
+          children: <Widget>[
+            createItem(themeHelper, Icons.drive_eta, 1),
+            createItem(themeHelper, Icons.thermostat, 2),
+            createItem(themeHelper, Icons.music_note, 3)
+          ],
+        ));
   }
 
-  Widget createItem(BuildContext context, IconData icon, int tabPosition) {
-    final double size = MediaQuery.of(context).size.width / 6;
-    final double padding = size / 4;
-    final double border = padding / 4;
+  Widget createItem(
+      LayoutSizeHelper themeHelper, IconData icon, int tabPosition) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           shape: CircleBorder(),
-          padding: EdgeInsets.all(padding),
+          padding: EdgeInsets.all(themeHelper.largePadding),
           primary: Colors.lightBlue.shade400,
-            side: BorderSide(width: border, color: Colors.lightBlue.shade400)
+          side: BorderSide(
+              width: themeHelper.defaultBorder,
+              color: Colors.lightBlue.shade400),
         ),
         onPressed: () {
           onSetNavigationIndex(tabPosition);
@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
         child: Icon(
           icon,
           color: Colors.lightBlue.shade800,
-          size: size / 2,
+          size: themeHelper.largeIconSize,
         ),
       ),
     );

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_homescreen/page_dashboard.dart';
 import 'package:flutter_homescreen/page_home.dart';
@@ -59,6 +57,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
   }
 
   Widget _buildLayout(BuildContext context, BoxConstraints constraints) {
+    // size the icons so they cover the left edge of the screen
     var iconSize = constraints.maxHeight / (PageIndex.values.length + 2);
     var railSize = constraints.maxHeight / (PageIndex.values.length + 1);
 

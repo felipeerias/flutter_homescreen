@@ -1,17 +1,37 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_homescreen/layout_size_helper.dart';
 
 class MediaPage extends StatelessWidget {
   const MediaPage({Key? key}) : super(key: key);
 
-  Widget _buildLayout(BuildContext context, BoxConstraints constraints) {
-    // describe the layout in terms of fractions of the container size
-    double mainDimension = max(constraints.maxWidth, constraints.maxHeight);
-    //double minDimension = min(constraints.maxWidth, constraints.maxHeight);
-    double iconSize = mainDimension / 12.0;
+  Widget _createMediaButton(
+      IconData icon, double iconSize, Null Function() onPressed) {
+    return Padding(
+      padding: EdgeInsets.all(iconSize / 8),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        child: Icon(
+          icon,
+          color: Colors.blueGrey.shade700,
+          size: iconSize,
+        ),
+        style: ElevatedButton.styleFrom(
+          shape: CircleBorder(),
+          padding: EdgeInsets.all(iconSize / 8),
+          primary: Colors.blueGrey.shade100,
+          onPrimary: Colors.white,
+        ),
+      ),
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    var sizeHelper = LayoutSizeHelper(context);
     return Container(
+        color: Colors.deepPurple.shade50,
+        child: Center(
+            child: Container(
       color: Colors.blueGrey.shade900,
       constraints: BoxConstraints.expand(),
       alignment: Alignment.center,
@@ -34,44 +54,25 @@ class MediaPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _createMediaButton(Icons.skip_previous, iconSize, () {}),
-              _createMediaButton(Icons.play_arrow, iconSize, () {}),
-              _createMediaButton(Icons.skip_next, iconSize, () {}),
+              _createMediaButton(
+                    Icons.skip_previous,
+                    sizeHelper.defaultIconSize,
+                    () {},
+                  ),
+                  _createMediaButton(
+                    Icons.play_arrow,
+                    sizeHelper.defaultIconSize,
+                    () {},
+                  ),
+                  _createMediaButton(
+                    Icons.skip_next,
+                    sizeHelper.defaultIconSize,
+                    () {},
+                  ),
             ],
           )
         ],
       ),
-    );
-  }
-
-  Widget _createMediaButton(
-      IconData icon, double iconSize, Null Function() onPressed) {
-    return Padding(
-      padding: EdgeInsets.all(iconSize / 8),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        child: Icon(
-          icon,
-          color: Colors.blueGrey.shade700,
-          size: iconSize,
-        ),
-        style: ElevatedButton.styleFrom(
-          shape: CircleBorder(),
-          padding: EdgeInsets.all(iconSize / 8),
-          primary: Colors.blueGrey.shade100,
-          onPrimary: Colors.white,
-        ),
-      ), 
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        color: Colors.deepPurple.shade50,
-        child: Center(
-            child: LayoutBuilder(
-          builder: _buildLayout,
-        )));
+    )));
   }
 }

@@ -1,57 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_homescreen/layout_size_helper.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var iconSize = screenHeight / 8;
-
+    var sizeHelper = LayoutSizeHelper(context);
     return Container(
       color: Colors.indigo.shade50,
       constraints: BoxConstraints.expand(),
       alignment: Alignment.center,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
             '0 kpm',
-            style: Theme.of(context).textTheme.headline4,
+            style: Theme.of(context).textTheme.headline2,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    'Left front tire',
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                  Text(
-                    'Left rear tire',
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Left front tire',
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    SizedBox(
+                      height: sizeHelper.largeIconSize,
+                    ),
+                    Text(
+                      'Left rear tire',
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                  ],
+                ),
               ),
-              Icon(
-                Icons.drive_eta,
-                size: iconSize,
-                color: Colors.indigo.shade800,
+              Image.asset(
+                'images/HMI_Dashboard_Car_720.png',
+                width: sizeHelper.largeIconSize,
+                fit: BoxFit.contain,
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    'Right front tire',
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                  Text(
-                    'Right rear tire',
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Right front tire',
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    SizedBox(
+                      height: sizeHelper.largeIconSize,
+                    ),
+                    Text(
+                      'Right rear tire',
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -59,10 +70,7 @@ class DashboardPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _RPMWidget(),
-              Text(
-                'Fuel',
-                style: Theme.of(context).textTheme.headline4,
-              ),
+              _FuelWidget(),
             ],
           )
         ],
@@ -71,22 +79,59 @@ class DashboardPage extends StatelessWidget {
   }
 }
 
-// ignore: unused_element
 class _RPMWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+    var sizeHelper = LayoutSizeHelper(context);
+    return Stack(
+      alignment: Alignment.center,
       children: [
-        Icon(Icons.fastfood),
-        Container(
-          height: 20,
-          width: 70,
-          child: LinearProgressIndicator(
-            value: 0.75,
-            semanticsLabel: 'Linear progress indicator',
-          ),
+        Text(
+          'RPM',
+          style: Theme.of(context).textTheme.headline4,
         ),
+        Container(
+          height: sizeHelper.largeIconSize,
+          width: sizeHelper.largeIconSize,
+          margin: EdgeInsets.all(sizeHelper.largePadding),
+          child: RotatedBox(
+            quarterTurns: 2,
+            child: CircularProgressIndicator(
+              value: 0.75,
+              strokeWidth: sizeHelper.largeIconSize / 4.0,
+              semanticsLabel: 'RPM indicator',
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class _FuelWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var sizeHelper = LayoutSizeHelper(context);
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Text(
+          'Fuel',
+          style: Theme.of(context).textTheme.headline4,
+        ),
+        Container(
+          height: sizeHelper.largeIconSize,
+          width: sizeHelper.largeIconSize,
+          margin: EdgeInsets.all(sizeHelper.largePadding),
+          child: RotatedBox(
+            quarterTurns: 2,
+            child: CircularProgressIndicator(
+              value: 0.75,
+              strokeWidth: sizeHelper.largeIconSize / 4.0,
+              semanticsLabel: 'RPM indicator',
+            ),
+          ),
+        )
       ],
     );
   }
