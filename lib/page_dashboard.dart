@@ -1,8 +1,46 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_homescreen/layout_size_helper.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+class DashboardPage extends StatefulWidget {
+  DashboardPage({Key? key}) : super(key: key);
+
+  @override
+  _DashboardPageState createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  late Timer _timer;
+
+  double speed = 20;
+  // between 0 and 1.0
+  double rpm = 0.2;
+  // between 0 and 1.0
+  double fuel = 0.2;
+
+  @override
+  void initState() {
+    _timer = new Timer.periodic(
+      Duration(milliseconds: 10),
+      (Timer timer) {
+        setState(() {
+          double now = DateTime.now().millisecondsSinceEpoch / 1000;
+          speed = 50 + 40 * sin(now);
+          rpm = 0.5 + sin(now) / 3.0;
+          fuel = 0.6 + cos(now) / 4.0;
+        });
+      },
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +57,7 @@ class DashboardPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            '0 kpm',
+            '${speed.floor()} kpm',
             style: Theme.of(context).textTheme.headline2,
           ),
           Row(
@@ -30,17 +68,11 @@ class DashboardPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      'Left front tire',
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
+                    _TireWidget('Left front tire', 21, CrossAxisAlignment.end),
                     SizedBox(
                       height: sizeHelper.largeIconSize,
                     ),
-                    Text(
-                      'Left rear tire',
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
+                    _TireWidget('Left rear tire', 23, CrossAxisAlignment.end),
                   ],
                 ),
               ),
@@ -54,17 +86,13 @@ class DashboardPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Right front tire',
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
+                    _TireWidget(
+                        'Right front tire', 21, CrossAxisAlignment.start),
                     SizedBox(
                       height: sizeHelper.largeIconSize,
                     ),
-                    Text(
-                      'Right rear tire',
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
+                    _TireWidget(
+                        'Right rear tire', 23, CrossAxisAlignment.start),
                   ],
                 ),
               ),
@@ -73,8 +101,8 @@ class DashboardPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _RPMWidget(),
-              _FuelWidget(),
+              _RPMWidget(rpm),
+              _FuelWidget(fuel),
             ],
           )
         ],
@@ -83,7 +111,34 @@ class DashboardPage extends StatelessWidget {
   }
 }
 
+class _TireWidget extends StatelessWidget {
+  String label;
+  int value;
+  CrossAxisAlignment crossAlign;
+
+  _TireWidget(this.label, this.value, this.crossAlign);
+
+  @override
+  Widget build(BuildContext context) {
+    var sizeHelper = LayoutSizeHelper(context);
+    return Column(crossAxisAlignment: crossAlign, children: [
+      Text(
+        label,
+        style: Theme.of(context).textTheme.caption,
+      ),
+      Text(
+        '$value PSI',
+        style: Theme.of(context).textTheme.headline5,
+      )
+    ]);
+  }
+}
+
 class _RPMWidget extends StatelessWidget {
+  double rpm;
+
+  _RPMWidget(this.rpm);
+
   @override
   Widget build(BuildContext context) {
     var sizeHelper = LayoutSizeHelper(context);
@@ -100,7 +155,7 @@ class _RPMWidget extends StatelessWidget {
           child: RotatedBox(
             quarterTurns: 2,
             child: CircularProgressIndicator(
-              value: 0.75,
+              value: rpm,
               strokeWidth: sizeHelper.largeIconSize / 4.0,
               semanticsLabel: 'RPM indicator',
             ),
@@ -112,6 +167,10 @@ class _RPMWidget extends StatelessWidget {
 }
 
 class _FuelWidget extends StatelessWidget {
+  double fuel;
+
+  _FuelWidget(this.fuel);
+
   @override
   Widget build(BuildContext context) {
     var sizeHelper = LayoutSizeHelper(context);
@@ -126,7 +185,7 @@ class _FuelWidget extends StatelessWidget {
           width: sizeHelper.largeIconSize,
           margin: EdgeInsets.all(sizeHelper.largePadding),
           child: LinearProgressIndicator(
-            value: 0.75,
+            value: fuel,
             semanticsLabel: 'RPM indicator',
           ),
         )

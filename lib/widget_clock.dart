@@ -18,7 +18,6 @@ class _ClockWiddgetState extends State<ClockWiddget> {
   late Timer _timer;
   DateTime _now = DateTime.now();
 
-
   @override
   void initState() {
     _now = DateTime.now();
