@@ -39,7 +39,6 @@ class _TemperatureSelectorState extends State<_TemperatureSelector> {
                 fontSize: sizeHelper.baseFontSize,
               ),
           selectedTextStyle: DefaultTextStyle.of(context).style.copyWith(
-                color: Colors.white,
                 fontSize: sizeHelper.baseFontSize * 1.5,
               ),
           itemHeight: sizeHelper.baseFontSize * 3,
@@ -104,7 +103,6 @@ class _HVACPageState extends State<HVACPage> {
   Widget build(BuildContext context) {
     var sizeHelper = LayoutSizeHelper(context);
     TextStyle buttonTextStyle = DefaultTextStyle.of(context).style.copyWith(
-          color: Colors.white,
           fontSize: sizeHelper.baseFontSize,
         );
 

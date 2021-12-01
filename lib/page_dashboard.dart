@@ -8,7 +8,11 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var sizeHelper = LayoutSizeHelper(context);
     return Container(
-      color: Colors.indigo.shade50,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [Colors.teal.shade900, Colors.grey.shade900])),
       constraints: BoxConstraints.expand(),
       alignment: Alignment.center,
       child: Column(
@@ -93,7 +97,6 @@ class _RPMWidget extends StatelessWidget {
         Container(
           height: sizeHelper.largeIconSize,
           width: sizeHelper.largeIconSize,
-          margin: EdgeInsets.all(sizeHelper.largePadding),
           child: RotatedBox(
             quarterTurns: 2,
             child: CircularProgressIndicator(
@@ -112,24 +115,19 @@ class _FuelWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var sizeHelper = LayoutSizeHelper(context);
-    return Stack(
-      alignment: Alignment.center,
+    return Row(
       children: [
         Text(
           'Fuel',
           style: Theme.of(context).textTheme.headline4,
         ),
         Container(
-          height: sizeHelper.largeIconSize,
+          height: sizeHelper.largeIconSize / 4.0,
           width: sizeHelper.largeIconSize,
           margin: EdgeInsets.all(sizeHelper.largePadding),
-          child: RotatedBox(
-            quarterTurns: 2,
-            child: CircularProgressIndicator(
-              value: 0.75,
-              strokeWidth: sizeHelper.largeIconSize / 4.0,
-              semanticsLabel: 'RPM indicator',
-            ),
+          child: LinearProgressIndicator(
+            value: 0.75,
+            semanticsLabel: 'RPM indicator',
           ),
         )
       ],
