@@ -143,6 +143,12 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
           ),
           // This is the main content.
           Expanded(
+            // TODO This solution adds a nice animation but loses the state
+            // of the old page whenever a new one comes in. We could use
+            // IndexedStack to keep the state of each page, at the cost of not
+            // having nice animations between pages. Another option could be to
+            // move the state of each page upwards in the tree.
+            // See also: https://docs.flutter.dev/development/data-and-backend/state-mgmt/options
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 500),
               reverseDuration: const Duration(milliseconds: 500),
