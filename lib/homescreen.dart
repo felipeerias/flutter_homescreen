@@ -36,7 +36,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
       case PageIndex.dashboard:
         return DashboardPage(key: ValueKey(selectedIndex));
       case PageIndex.hvac:
-        return HVACPageContainer(key: ValueKey(selectedIndex));
+        return HVACPage(key: ValueKey(selectedIndex));
       case PageIndex.media:
         return MediaPage(key: ValueKey(selectedIndex));
       case PageIndex.demo3d:

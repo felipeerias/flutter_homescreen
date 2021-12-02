@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_homescreen/layout_size_helper.dart';
 
+// The Home page.
 class HomePage extends StatelessWidget {
   final Function(int index) onSetNavigationIndex;
 
@@ -9,44 +10,92 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var themeHelper = LayoutSizeHelper(context);
+    var sizeHelper = LayoutSizeHelper(context);
     return Container(
-        color: Colors.lightBlue.shade50,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [Colors.blueGrey.shade800, Colors.grey.shade900])),
         constraints: BoxConstraints.expand(),
         alignment: Alignment.center,
         child: Wrap(
-          spacing: themeHelper.largePadding,
-          runSpacing: themeHelper.largePadding,
+          spacing: sizeHelper.largePadding,
+          runSpacing: sizeHelper.largePadding,
           children: <Widget>[
-            createItem(themeHelper, Icons.drive_eta, 1),
-            createItem(themeHelper, Icons.thermostat, 2),
-            createItem(themeHelper, Icons.music_note, 3)
+            _HomePageEntry(
+              label: "DASHBOARD",
+              icon: Icons.drive_eta,
+              onPressed: () {
+                onSetNavigationIndex(1);
+              },
+            ),
+            _HomePageEntry(
+              label: "HVAC",
+              icon: Icons.thermostat,
+              onPressed: () {
+                onSetNavigationIndex(2);
+              },
+            ),
+            _HomePageEntry(
+              label: "MEDIA",
+              icon: Icons.music_note,
+              onPressed: () {
+                onSetNavigationIndex(3);
+              },
+            ),
           ],
         ));
   }
+}
 
-  Widget createItem(
-      LayoutSizeHelper themeHelper, IconData icon, int tabPosition) {
+// Each one of the items on the Home page.
+class _HomePageEntry extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Null Function() onPressed;
+
+  const _HomePageEntry(
+      {Key? key,
+      required this.label,
+      required this.icon,
+      required this.onPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var sizeHelper = LayoutSizeHelper(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: CircleBorder(),
-          padding: EdgeInsets.all(themeHelper.largePadding),
-          primary: Colors.lightBlue.shade400,
-          side: BorderSide(
-              width: themeHelper.defaultBorder,
-              color: Colors.lightBlue.shade400),
-        ),
-        onPressed: () {
-          onSetNavigationIndex(tabPosition);
-        },
-        child: Icon(
-          icon,
-          color: Colors.lightBlue.shade800,
-          size: themeHelper.largeIconSize,
-        ),
-      ),
-    );
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Column(
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: CircleBorder(),
+                padding: EdgeInsets.all(sizeHelper.largePadding),
+                primary: Colors.lightBlue.shade800,
+                side: BorderSide(
+                    width: sizeHelper.defaultBorder,
+                    color: Colors.lightBlue.shade200),
+              ),
+              onPressed: onPressed,
+              child: Icon(
+                icon,
+                color: Colors.lightBlue.shade50,
+                size: sizeHelper.largeIconSize,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(sizeHelper.defaultPadding),
+              child: Text(
+                label,
+                style: DefaultTextStyle.of(context).style.copyWith(
+                      fontSize: sizeHelper.baseFontSize,
+                      color: Colors.lightBlue.shade100,
+                    ),
+              ),
+            ),
+          ],
+        ));
   }
 }

@@ -2,91 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_homescreen/layout_size_helper.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-class HVACPageContainer extends StatelessWidget {
-  const HVACPageContainer({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints.expand(),
-      alignment: Alignment.center,
-      child: const HVACPage(title: 'AGL - Flutter HVAC'),
-    );
-  }
-}
-
-class _TemperatureSelector extends StatefulWidget {
-  _TemperatureSelector({Key? key}) : super(key: key);
-
-  @override
-  _TemperatureSelectorState createState() => _TemperatureSelectorState();
-}
-
-class _TemperatureSelectorState extends State<_TemperatureSelector> {
-  int _currentValue = 22; // INIT FROM AGLJS wrapper
-
-  @override
-  Widget build(BuildContext context) {
-    var sizeHelper = LayoutSizeHelper(context);
-    return Column(
-      children: <Widget>[
-        NumberPicker(
-          value: _currentValue,
-          minValue: 18,
-          maxValue: 25,
-          onChanged: (value) => setState(() => _currentValue = value),
-          textStyle: DefaultTextStyle.of(context).style.copyWith(
-                color: Colors.teal.shade200,
-                fontSize: sizeHelper.baseFontSize,
-              ),
-          selectedTextStyle: DefaultTextStyle.of(context).style.copyWith(
-                fontSize: sizeHelper.baseFontSize * 1.5,
-              ),
-          itemHeight: sizeHelper.baseFontSize * 3,
-          itemWidth: sizeHelper.baseFontSize * 6,
-        ),
-      ],
-    );
-  }
-}
-
-/// This is the stateful widget that the main application instantiates.
-class HVACFanSpeed extends StatefulWidget {
-  const HVACFanSpeed({Key? key}) : super(key: key);
-  @override
-  State<HVACFanSpeed> createState() => _HVACFanSpeedState();
-}
-
-/// This is the private State class that goes with MyStatefulWidget.
-class _HVACFanSpeedState extends State<HVACFanSpeed> {
-  double _currentSliderValue = 20;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliderTheme(
-      data: SliderThemeData(
-        thumbColor: Colors.greenAccent.shade700,
-        activeTrackColor: Colors.greenAccent.shade700,
-        inactiveTrackColor: Colors.blueGrey.shade200,
-      ),
-      child: Slider(
-        value: _currentSliderValue,
-        min: 0,
-        max: 300,
-        label: _currentSliderValue.round().toString(),
-        onChanged: (double value) {
-          setState(() {
-            _currentSliderValue = value;
-          });
-        },
-      ),
-    );
-  }
-}
-
+// The page for heating, ventilation, and air conditioning.
 class HVACPage extends StatefulWidget {
-  const HVACPage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const HVACPage({Key? key}) : super(key: key);
 
   @override
   State<HVACPage> createState() => _HVACPageState();
@@ -99,25 +17,18 @@ String rightChairOff = 'images/HMI_HVAC_Right_Chair_OFF.png';
 String circulationActive = 'images/HMI_HVAC_Circulation_Active.png';
 String circulationInactive = 'images/HMI_HVAC_Circulation_Inactive.png';
 
-// Get from API
-bool leftChairSelected = true;
-bool rightChairSelected = true;
-bool acSelected = true;
-bool autoSelected = true;
-bool circulationSelected = true;
-
 class _HVACPageState extends State<HVACPage> {
-  final double fanSpeed = 20;
+// Get from API
+  bool leftChairSelected = true;
+  bool rightChairSelected = true;
+  bool acSelected = true;
+  bool autoSelected = false;
+  bool circulationSelected = false;
+  double fanSpeed = 20;
 
   @override
   Widget build(BuildContext context) {
     var sizeHelper = LayoutSizeHelper(context);
-    TextStyle buttonTextStyle = DefaultTextStyle.of(context).style.copyWith(
-          fontSize: sizeHelper.baseFontSize,
-        );
-    TextStyle unselectedButtonTextStyle = buttonTextStyle.copyWith(
-      color: Colors.grey,
-    );
 
     Widget fanSpeedControl = Container(
       padding: EdgeInsets.symmetric(
@@ -126,7 +37,16 @@ class _HVACPageState extends State<HVACPage> {
       ),
       child: Row(
         children: [
-          Expanded(flex: 4, child: const HVACFanSpeed()),
+          Expanded(
+              flex: 4,
+              child: HVACFanSpeed(
+                fanSpeed: fanSpeed,
+                onUpdateFanSpeed: (double newFanSpeed) {
+                  setState(() {
+                    fanSpeed = newFanSpeed;
+                  });
+                },
+              )),
           SizedBox(width: sizeHelper.defaultPadding),
           Expanded(
               flex: 1,
@@ -186,72 +106,34 @@ class _HVACPageState extends State<HVACPage> {
       padding: EdgeInsets.all(sizeHelper.defaultPadding),
       child: Column(
         children: [
-          Container(
-            width: sizeHelper.defaultButtonWidth,
-            height: sizeHelper.defaultButtonHeight,
-            margin: EdgeInsets.all(sizeHelper.defaultPadding),
-            decoration: BoxDecoration(
-                border: Border.all(
-                  color: acSelected ? Colors.green : Colors.grey,
-              ),
-            ),
-            child: OutlinedButton(
+          _HVACToggleButton(
+              label: 'A/C',
+              isSelected: acSelected,
               onPressed: () {
                 setState(() {
                   acSelected = !acSelected;
                 });
-              },
-              child: Text(
-                "A / C",
-                style: acSelected ? buttonTextStyle : unselectedButtonTextStyle,
-              ),
-            ),
-          ),
-          Container(
-            width: sizeHelper.defaultButtonWidth,
-            height: sizeHelper.defaultButtonHeight,
-            margin: EdgeInsets.all(sizeHelper.defaultPadding),
-            decoration: BoxDecoration(
-                border: Border.all(
-                  color: autoSelected ? Colors.green : Colors.grey,
-                ),
-            ),
-            child: OutlinedButton(
+              }),
+          _HVACToggleButton(
+              label: 'Auto',
+              isSelected: autoSelected,
               onPressed: () {
                 setState(() {
                   autoSelected = !autoSelected;
                 });
-              },
-              child: Text(
-                "Auto",
-                style:
-                    autoSelected ? buttonTextStyle : unselectedButtonTextStyle,
-              ),
-            ),
-          ),
-          Container(
-            width: sizeHelper.defaultButtonWidth,
-            height: sizeHelper.defaultButtonHeight,
-            margin: EdgeInsets.all(sizeHelper.defaultPadding),
-            decoration: BoxDecoration(
-                border: Border.all(
-                  color: circulationSelected ? Colors.green : Colors.grey,
-                ),
-            ),
-            child: OutlinedButton(
-                onPressed: () {
-                  setState(() {
-                    circulationSelected = !circulationSelected;
-                  });
-                },
-                child: Image.asset(
-                    circulationSelected
-                        ? circulationActive
-                        : circulationInactive,
-                    width: sizeHelper.defaultIconSize,
-                    height: sizeHelper.defaultIconSize,
-                    fit: BoxFit.contain)),
-          ),
+              }),
+          _HVACToggleButton(
+              child: Image.asset(
+                  circulationSelected ? circulationActive : circulationInactive,
+                  width: sizeHelper.defaultIconSize,
+                  height: sizeHelper.defaultIconSize,
+                  fit: BoxFit.contain),
+              isSelected: circulationSelected,
+              onPressed: () {
+                setState(() {
+                  circulationSelected = !circulationSelected;
+                });
+              }),
         ],
       ),
     );
@@ -300,5 +182,125 @@ class _HVACPageState extends State<HVACPage> {
             ])
           ],
         ));
+  }
+}
+
+// The temperature selector.
+class _TemperatureSelector extends StatefulWidget {
+  _TemperatureSelector({Key? key}) : super(key: key);
+
+  @override
+  _TemperatureSelectorState createState() => _TemperatureSelectorState();
+}
+
+class _TemperatureSelectorState extends State<_TemperatureSelector> {
+  int _currentValue = 22; // INIT FROM AGLJS wrapper
+
+  @override
+  Widget build(BuildContext context) {
+    var sizeHelper = LayoutSizeHelper(context);
+    return Column(
+      children: <Widget>[
+        NumberPicker(
+          value: _currentValue,
+          minValue: 18,
+          maxValue: 25,
+          onChanged: (value) => setState(() => _currentValue = value),
+          textStyle: DefaultTextStyle.of(context).style.copyWith(
+                color: Colors.teal.shade200,
+                fontSize: sizeHelper.baseFontSize,
+              ),
+          selectedTextStyle: DefaultTextStyle.of(context).style.copyWith(
+                fontSize: sizeHelper.baseFontSize * 1.5,
+              ),
+          itemHeight: sizeHelper.baseFontSize * 3,
+          itemWidth: sizeHelper.baseFontSize * 6,
+        ),
+      ],
+    );
+  }
+}
+
+/// The fan speed control.
+class HVACFanSpeed extends StatelessWidget {
+  final double fanSpeed;
+  final Null Function(double) onUpdateFanSpeed;
+
+  const HVACFanSpeed(
+      {Key? key, required this.fanSpeed, required this.onUpdateFanSpeed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliderTheme(
+      data: SliderThemeData(
+        thumbColor: Colors.greenAccent.shade700,
+        activeTrackColor: Colors.greenAccent.shade700,
+        inactiveTrackColor: Colors.blueGrey.shade200,
+      ),
+      child: Slider(
+        value: fanSpeed,
+        min: 0,
+        max: 300,
+        label: fanSpeed.round().toString(),
+        onChanged: (double value) {
+          onUpdateFanSpeed(value);
+        },
+      ),
+    );
+  }
+}
+
+// Each one of the toggle buttons in the UI.
+class _HVACToggleButton extends StatelessWidget {
+  final String? label;
+  final Widget? child;
+  final bool isSelected;
+  final Null Function() onPressed;
+
+  _HVACToggleButton(
+      {Key? key,
+      this.label,
+      this.child,
+      required this.isSelected,
+      required this.onPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var sizeHelper = LayoutSizeHelper(context);
+    TextStyle buttonTextStyle = DefaultTextStyle.of(context).style.copyWith(
+          fontSize: sizeHelper.baseFontSize,
+          fontWeight: FontWeight.bold,
+        );
+    TextStyle unselectedButtonTextStyle = buttonTextStyle.copyWith(
+      color: Colors.grey,
+      fontWeight: FontWeight.normal,
+    );
+
+    return Container(
+      width: sizeHelper.defaultButtonWidth,
+      height: sizeHelper.defaultButtonHeight,
+      margin: EdgeInsets.all(sizeHelper.defaultPadding),
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(sizeHelper.defaultButtonHeight / 4.0),
+          ),
+          side: BorderSide(
+            width: sizeHelper.defaultBorder,
+            color: isSelected ? Colors.green : Colors.grey,
+            style: BorderStyle.solid,
+          ),
+        ),
+        child: child ??
+            Text(
+              label ?? '',
+              style: isSelected ? buttonTextStyle : unselectedButtonTextStyle,
+            ),
+      ),
+    );
   }
 }
