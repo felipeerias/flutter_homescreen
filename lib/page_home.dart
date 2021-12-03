@@ -69,14 +69,13 @@ class _HomePageEntry extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Column(
           children: [
-            ElevatedButton(
+            OutlinedButton(
               style: ElevatedButton.styleFrom(
                 shape: CircleBorder(),
                 padding: EdgeInsets.all(sizeHelper.largePadding),
-                primary: Colors.lightBlue.shade800,
                 side: BorderSide(
                     width: sizeHelper.defaultBorder,
-                    color: Colors.lightBlue.shade200),
+                    color: Colors.lightBlue.shade100),
               ),
               onPressed: onPressed,
               child: Icon(
