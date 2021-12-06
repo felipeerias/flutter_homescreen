@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl: ^0.17.0
   numberpicker: ^2.1.1
+  provider: ^6.0.1
 
 dev_dependencies:
   flutter_test:
@@ -51,16 +52,12 @@ flutter:
     - images/HMI_HVAC_Fan_Icon.png
     - images/HMI_HVAC_Left_Chair_ON.png
     - images/HMI_HVAC_Right_Chair_ON.png
-    - images/HMI_HVAC_Left_Chair_OFF.png
-    - images/HMI_HVAC_Right_Chair_OFF.png
     - images/HMI_HVAC_Circulation_Active.png
-    - images/HMI_HVAC_Circulation_Inactive.png
     - images/HMI_HVAC_Rear_Active.png
-    - images/HMI_HVAC_Front_Inactive.png
-    - images/HMI_HVAC_AirDown_Inactive.png
-    - images/HMI_HVAC_AirUp_Inactive.png
+    - images/HMI_HVAC_Front_Active.png
+    - images/HMI_HVAC_AirDown_Active.png
+    - images/HMI_HVAC_AirUp_Active.png
     - images/HMI_Dashboard_Car_720.png
-    - images/HMI_Dashboard_Car_1080.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
