@@ -1,30 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_homescreen/homescreen_model.dart';
 import 'package:flutter_homescreen/layout_size_helper.dart';
+import 'package:flutter_homescreen/switchable_image.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:provider/provider.dart';
+
+// image assets
+const String LEFT_SEAT = 'images/HMI_HVAC_Left_Chair_ON.png';
+const String RIGHT_SEAT = 'images/HMI_HVAC_Right_Chair_ON.png';
+const String CIRCULATION = 'images/HMI_HVAC_Circulation_Active.png';
+const String AIRDOWN = 'images/HMI_HVAC_AirDown_Active.png';
+const String AIRUP = 'images/HMI_HVAC_AirUp_Active.png';
+const String FRONT = 'images/HMI_HVAC_Front_Active.png';
+const String REAR = 'images/HMI_HVAC_Rear_Active.png';
 
 // The page for heating, ventilation, and air conditioning.
-class HVACPage extends StatefulWidget {
-  const HVACPage({Key? key}) : super(key: key);
-
-  @override
-  State<HVACPage> createState() => _HVACPageState();
-}
-
-String leftChairOn = 'images/HMI_HVAC_Left_Chair_ON.png';
-String leftChairOff = 'images/HMI_HVAC_Left_Chair_OFF.png';
-String rightChairOn = 'images/HMI_HVAC_Right_Chair_ON.png';
-String rightChairOff = 'images/HMI_HVAC_Right_Chair_OFF.png';
-String circulationActive = 'images/HMI_HVAC_Circulation_Active.png';
-String circulationInactive = 'images/HMI_HVAC_Circulation_Inactive.png';
-
-class _HVACPageState extends State<HVACPage> {
-// Get from API
-  bool leftChairSelected = true;
-  bool rightChairSelected = true;
-  bool acSelected = true;
-  bool autoSelected = false;
-  bool circulationSelected = false;
-  double fanSpeed = 20;
+class HVACPage extends StatelessWidget {
+  HVACPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,67 +30,23 @@ class _HVACPageState extends State<HVACPage> {
       child: Row(
         children: [
           Expanded(
-              flex: 4,
-              child: HVACFanSpeed(
-                fanSpeed: fanSpeed,
-                onUpdateFanSpeed: (double newFanSpeed) {
-                  setState(() {
-                    fanSpeed = newFanSpeed;
-                  });
-                },
-              )),
-          SizedBox(width: sizeHelper.defaultPadding),
+            flex: 3,
+            child: HVACFanSpeed(),
+          ),
           Expanded(
               flex: 1,
-              child: Image.asset('images/HMI_HVAC_Fan_Icon.png',
+              child: Container(
+                alignment: Alignment.centerLeft,
+                child: Image.asset('images/HMI_HVAC_Fan_Icon.png',
                   width: sizeHelper.defaultIconSize,
                   height: sizeHelper.defaultIconSize,
                   fit: BoxFit.contain)),
+              ),
         ],
-      ),
-    );
 
-    Widget rightSeat = Container(
-      padding: EdgeInsets.all(sizeHelper.defaultPadding),
-      child: Column(
-        children: [
-          IconButton(
-            iconSize: sizeHelper.largeIconSize,
-            icon: Image.asset(leftChairSelected ? leftChairOn : leftChairOff,
-                width: sizeHelper.largeIconSize,
-                height: sizeHelper.largeIconSize,
-                fit: BoxFit.contain),
-            onPressed: () {
-              setState(() {
-                leftChairSelected = !leftChairSelected;
-              });
-            },
-          ),
-          SizedBox(height: sizeHelper.defaultPadding),
-          _TemperatureSelector(),
-        ],
-      ),
-    );
-
-    Widget leftSeat = Container(
-      padding: EdgeInsets.all(sizeHelper.defaultPadding),
-      child: Column(
-        children: [
-          IconButton(
-            iconSize: sizeHelper.largeIconSize,
-            icon: Image.asset(rightChairSelected ? rightChairOn : rightChairOff,
-                width: sizeHelper.largeIconSize,
-                height: sizeHelper.largeIconSize,
-                fit: BoxFit.contain),
-            onPressed: () {
-              setState(() {
-                rightChairSelected = !rightChairSelected;
-              });
-            },
-          ),
-          SizedBox(height: sizeHelper.defaultPadding),
-          _TemperatureSelector(),
-        ],
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
       ),
     );
 
@@ -107,62 +55,35 @@ class _HVACPageState extends State<HVACPage> {
       child: Column(
         children: [
           _HVACToggleButton(
-              label: 'A/C',
-              isSelected: acSelected,
-              onPressed: () {
-                setState(() {
-                  acSelected = !acSelected;
-                });
-              }),
+            label: 'A/C',
+            switchId: SwitchId.hvacAc,
+          ),
           _HVACToggleButton(
-              label: 'Auto',
-              isSelected: autoSelected,
-              onPressed: () {
-                setState(() {
-                  autoSelected = !autoSelected;
-                });
-              }),
+            label: 'Auto',
+            switchId: SwitchId.hvacAuto,
+          ),
           _HVACToggleButton(
-              child: Image.asset(
-                  circulationSelected ? circulationActive : circulationInactive,
-                  width: sizeHelper.defaultIconSize,
-                  height: sizeHelper.defaultIconSize,
-                  fit: BoxFit.contain),
-              isSelected: circulationSelected,
-              onPressed: () {
-                setState(() {
-                  circulationSelected = !circulationSelected;
-                });
-              }),
+            imageAssetId: CIRCULATION,
+            switchId: SwitchId.hvacCirculation,
+          ),
         ],
       ),
     );
-    Widget actions = Container(
-      padding: EdgeInsets.all(sizeHelper.defaultPadding),
-      child: Column(
+
+    Widget actions =
+        Consumer<HomescreenModel>(builder: (context, model, child) {
+      return Column(
         children: [
-          Image.asset('images/HMI_HVAC_AirDown_Inactive.png',
-              width: sizeHelper.defaultIconSize,
-              height: sizeHelper.defaultIconSize,
-              fit: BoxFit.contain),
+          _ActionButton(switchId: SwitchId.hvacAirDown, imageAssetId: AIRDOWN),
           SizedBox(height: sizeHelper.defaultPadding),
-          Image.asset('images/HMI_HVAC_AirUp_Inactive.png',
-              width: sizeHelper.defaultIconSize,
-              height: sizeHelper.defaultIconSize,
-              fit: BoxFit.contain),
+          _ActionButton(switchId: SwitchId.hvacAirUp, imageAssetId: AIRUP),
           SizedBox(height: sizeHelper.defaultPadding),
-          Image.asset('images/HMI_HVAC_Front_Inactive.png',
-              width: sizeHelper.defaultIconSize,
-              height: sizeHelper.defaultIconSize,
-              fit: BoxFit.contain),
+          _ActionButton(switchId: SwitchId.hvacFront, imageAssetId: FRONT),
           SizedBox(height: sizeHelper.defaultPadding),
-          Image.asset('images/HMI_HVAC_Rear_Active.png',
-              width: sizeHelper.defaultIconSize,
-              height: sizeHelper.defaultIconSize,
-              fit: BoxFit.contain),
+          _ActionButton(switchId: SwitchId.hvacRear, imageAssetId: REAR),
         ],
-      ),
-    );
+      );
+    });
 
     return Container(
         decoration: BoxDecoration(
@@ -175,9 +96,21 @@ class _HVACPageState extends State<HVACPage> {
           children: <Widget>[
             fanSpeedControl,
             Row(children: [
-              Expanded(flex: 1, child: rightSeat),
+              Expanded(
+                  flex: 1,
+                  child: _SeatButton(
+                    switchId: SwitchId.hvacLeftSeat,
+                    temperatureId: TemperatureId.leftSeat,
+                    imageAssetId: LEFT_SEAT,
+                  )),
               Expanded(flex: 1, child: centerView),
-              Expanded(flex: 1, child: leftSeat),
+              Expanded(
+                  flex: 1,
+                  child: _SeatButton(
+                    switchId: SwitchId.hvacRigthSeat,
+                    temperatureId: TemperatureId.rightSeat,
+                    imageAssetId: RIGHT_SEAT,
+                  )),
               Expanded(flex: 1, child: actions)
             ])
           ],
@@ -186,26 +119,22 @@ class _HVACPageState extends State<HVACPage> {
 }
 
 // The temperature selector.
-class _TemperatureSelector extends StatefulWidget {
-  _TemperatureSelector({Key? key}) : super(key: key);
+class _TemperatureSelector extends StatelessWidget {
+  final TemperatureId temperatureId;
 
-  @override
-  _TemperatureSelectorState createState() => _TemperatureSelectorState();
-}
-
-class _TemperatureSelectorState extends State<_TemperatureSelector> {
-  int _currentValue = 22; // INIT FROM AGLJS wrapper
+  _TemperatureSelector({Key? key, required this.temperatureId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var sizeHelper = LayoutSizeHelper(context);
-    return Column(
-      children: <Widget>[
-        NumberPicker(
-          value: _currentValue,
+    return Consumer<HomescreenModel>(
+      builder: (context, model, child) {
+        return NumberPicker(
+          value: model.getTemperature(temperatureId),
           minValue: 18,
           maxValue: 25,
-          onChanged: (value) => setState(() => _currentValue = value),
+          onChanged: (value) => model.setTemperature(temperatureId, value),
           textStyle: DefaultTextStyle.of(context).style.copyWith(
                 color: Colors.teal.shade200,
                 fontSize: sizeHelper.baseFontSize,
@@ -215,20 +144,15 @@ class _TemperatureSelectorState extends State<_TemperatureSelector> {
               ),
           itemHeight: sizeHelper.baseFontSize * 3,
           itemWidth: sizeHelper.baseFontSize * 6,
-        ),
-      ],
+        );
+      },
     );
   }
 }
 
 /// The fan speed control.
 class HVACFanSpeed extends StatelessWidget {
-  final double fanSpeed;
-  final Null Function(double) onUpdateFanSpeed;
-
-  const HVACFanSpeed(
-      {Key? key, required this.fanSpeed, required this.onUpdateFanSpeed})
-      : super(key: key);
+  const HVACFanSpeed({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -238,32 +162,73 @@ class HVACFanSpeed extends StatelessWidget {
         activeTrackColor: Colors.greenAccent.shade700,
         inactiveTrackColor: Colors.blueGrey.shade200,
       ),
-      child: Slider(
-        value: fanSpeed,
-        min: 0,
-        max: 300,
-        label: fanSpeed.round().toString(),
-        onChanged: (double value) {
-          onUpdateFanSpeed(value);
+      child: Consumer<HomescreenModel>(
+        builder: (context, model, child) {
+          return Slider(
+            value: model.fanSpeed,
+            min: 0,
+            max: 300,
+            label: model.fanSpeed.round().toString(),
+            onChanged: (double newValue) {
+              model.fanSpeed = newValue;
+            },
+          );
         },
       ),
     );
   }
 }
 
-// Each one of the toggle buttons in the UI.
+// the button to enable A/C on each seat
+class _SeatButton extends StatelessWidget {
+  final SwitchId switchId;
+  final TemperatureId temperatureId;
+  final String imageAssetId;
+
+  const _SeatButton({
+    Key? key,
+    required this.switchId,
+    required this.temperatureId,
+    required this.imageAssetId,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var sizeHelper = LayoutSizeHelper(context);
+    return Container(
+      padding: EdgeInsets.all(sizeHelper.defaultPadding),
+      child: Column(
+        children: [
+          Consumer<HomescreenModel>(
+            builder: (context, model, child) {
+              return IconButton(
+                onPressed: () => model.flipSwitch(switchId),
+                iconSize: sizeHelper.largeIconSize,
+                icon: SwitchableImage(
+                  value: model.getSwitchState(switchId),
+                  imageAssetId: imageAssetId,
+                  width: sizeHelper.largeIconSize,
+                  height: sizeHelper.largeIconSize,
+                ),
+              );
+            },
+          ),
+          SizedBox(height: sizeHelper.defaultPadding),
+          _TemperatureSelector(temperatureId: temperatureId),
+        ],
+      ),
+    );
+  }
+}
+
+// Each one of the large toggle buttons in the UI.
 class _HVACToggleButton extends StatelessWidget {
   final String? label;
-  final Widget? child;
-  final bool isSelected;
-  final Null Function() onPressed;
+  final String? imageAssetId;
+  final SwitchId switchId;
 
   _HVACToggleButton(
-      {Key? key,
-      this.label,
-      this.child,
-      required this.isSelected,
-      required this.onPressed})
+      {Key? key, required this.switchId, this.label, this.imageAssetId})
       : super(key: key);
 
   @override
@@ -282,25 +247,67 @@ class _HVACToggleButton extends StatelessWidget {
       width: sizeHelper.defaultButtonWidth,
       height: sizeHelper.defaultButtonHeight,
       margin: EdgeInsets.all(sizeHelper.defaultPadding),
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(sizeHelper.defaultButtonHeight / 4.0),
-          ),
-          side: BorderSide(
-            width: sizeHelper.defaultBorder,
-            color: isSelected ? Colors.green : Colors.grey,
-            style: BorderStyle.solid,
-          ),
-        ),
-        child: child ??
-            Text(
-              label ?? '',
-              style: isSelected ? buttonTextStyle : unselectedButtonTextStyle,
+      child: Consumer<HomescreenModel>(
+        builder: (context, model, child) {
+          return OutlinedButton(
+            onPressed: () => model.flipSwitch(switchId),
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(sizeHelper.defaultButtonHeight / 4.0),
+              ),
+              side: BorderSide(
+                width: sizeHelper.defaultBorder,
+                color:
+                    model.getSwitchState(switchId) ? Colors.green : Colors.grey,
+                style: BorderStyle.solid,
+              ),
             ),
+            child: (imageAssetId != null)
+                ? SwitchableImage(
+                    value: model.getSwitchState(switchId),
+                    imageAssetId: imageAssetId ?? '',
+                    width: sizeHelper.defaultIconSize,
+                    height: sizeHelper.defaultIconSize,
+                  )
+                : Text(
+                    label ?? '',
+                    style: model.getSwitchState(switchId)
+                        ? buttonTextStyle
+                        : unselectedButtonTextStyle,
+                  ),
+          );
+        },
       ),
+    );
+  }
+}
+
+// Each one of the small action buttons.
+class _ActionButton extends StatelessWidget {
+  final SwitchId switchId;
+  final String imageAssetId;
+
+  const _ActionButton(
+      {Key? key, required this.switchId, required this.imageAssetId})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var sizeHelper = LayoutSizeHelper(context);
+    return Consumer<HomescreenModel>(
+      builder: (context, model, child) {
+        return IconButton(
+          onPressed: () => model.flipSwitch(switchId),
+          iconSize: sizeHelper.defaultIconSize,
+          icon: SwitchableImage(
+            value: model.getSwitchState(switchId),
+            imageAssetId: imageAssetId,
+            width: sizeHelper.defaultIconSize,
+            height: sizeHelper.defaultIconSize,
+          ),
+        );
+      },
     );
   }
 }

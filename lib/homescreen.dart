@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_homescreen/homescreen_model.dart';
 import 'package:flutter_homescreen/page_dashboard.dart';
 import 'package:flutter_homescreen/page_home.dart';
 import 'package:flutter_homescreen/page_hvac.dart';
@@ -8,9 +10,7 @@ import 'package:flutter_homescreen/widget_clock.dart';
 enum PageIndex { home, dashboard, hvac, media, demo3d }
 
 class Homescreen extends StatefulWidget {
-  Homescreen({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  Homescreen({Key? key}) : super(key: key);
 
   @override
   _HomescreenState createState() => _HomescreenState();
@@ -143,44 +143,44 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
           ),
           // This is the main content.
           Expanded(
-            // TODO This solution adds a nice animation but loses the state
-            // of the old page whenever a new one comes in. We could use
-            // IndexedStack to keep the state of each page, at the cost of not
-            // having nice animations between pages. Another option could be to
-            // move the state of each page upwards in the tree.
-            // See also: https://docs.flutter.dev/development/data-and-backend/state-mgmt/options
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 500),
-              reverseDuration: const Duration(milliseconds: 500),
-              switchInCurve: Curves.easeInOut,
-              switchOutCurve: Curves.easeInOut,
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                if (child.key != ValueKey(_selectedIndex)) {
-                  return FadeTransition(
-                    opacity:
-                        Tween<double>(begin: 1.0, end: 1.0).animate(animation),
-                    child: child,
-                  );
-                }
-                Offset beginOffset = new Offset(
-                    0.0, (_selectedIndex > _previousIndex ? 1.0 : -1.0));
-                return SlideTransition(
-                  position: Tween<Offset>(begin: beginOffset, end: Offset.zero)
-                      .animate(animation),
-                  child: FadeTransition(
-                    opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                      CurvedAnimation(
-                        parent: animation,
-                        curve: Interval(0.5, 1.0),
+            child: ChangeNotifierProvider(
+              // See: https://docs.flutter.dev/development/data-and-backend/state-mgmt/simple
+              // Also: https://docs.flutter.dev/development/data-and-backend/state-mgmt/options
+              create: (context) => HomescreenModel(),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                reverseDuration: const Duration(milliseconds: 500),
+                switchInCurve: Curves.easeInOut,
+                switchOutCurve: Curves.easeInOut,
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  if (child.key != ValueKey(_selectedIndex)) {
+                    return FadeTransition(
+                      opacity: Tween<double>(begin: 1.0, end: 1.0)
+                          .animate(animation),
+                      child: child,
+                    );
+                  }
+                  Offset beginOffset = new Offset(
+                      0.0, (_selectedIndex > _previousIndex ? 1.0 : -1.0));
+                  return SlideTransition(
+                    position:
+                        Tween<Offset>(begin: beginOffset, end: Offset.zero)
+                            .animate(animation),
+                    child: FadeTransition(
+                      opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                        CurvedAnimation(
+                          parent: animation,
+                          curve: Interval(0.5, 1.0),
+                        ),
                       ),
+                      child: child,
                     ),
-                    child: child,
-                  ),
-                );
-              },
-              child: _childForIndex(_selectedIndex),
+                  );
+                },
+                child: _childForIndex(_selectedIndex),
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

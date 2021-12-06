@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         /* dark theme settings */
       ),
       themeMode: ThemeMode.dark, 
-      home: Homescreen(title: 'Flutter Homescreen'),
+      home: Homescreen(),
     );
   }
 }
