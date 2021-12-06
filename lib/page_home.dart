@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_homescreen/homescreen.dart';
 import 'package:flutter_homescreen/layout_size_helper.dart';
 
 // The Home page.
@@ -27,21 +28,28 @@ class HomePage extends StatelessWidget {
               label: "DASHBOARD",
               icon: Icons.drive_eta,
               onPressed: () {
-                onSetNavigationIndex(1);
+                onSetNavigationIndex(PageIndex.dashboard.index);
               },
             ),
             _HomePageEntry(
               label: "HVAC",
               icon: Icons.thermostat,
               onPressed: () {
-                onSetNavigationIndex(2);
+                onSetNavigationIndex(PageIndex.hvac.index);
               },
             ),
             _HomePageEntry(
               label: "MEDIA",
               icon: Icons.music_note,
               onPressed: () {
-                onSetNavigationIndex(3);
+                onSetNavigationIndex(PageIndex.media.index);
+              },
+            ),
+            _HomePageEntry(
+              label: "DEMO 3D",
+              icon: Icons.view_in_ar,
+              onPressed: () {
+                onSetNavigationIndex(PageIndex.demo3d.index);
               },
             ),
           ],

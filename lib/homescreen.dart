@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_homescreen/demo_3d.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_homescreen/homescreen_model.dart';
 import 'package:flutter_homescreen/page_dashboard.dart';
@@ -40,7 +41,7 @@ class _HomescreenState extends State<Homescreen> with TickerProviderStateMixin {
       case PageIndex.media:
         return MediaPage(key: ValueKey(selectedIndex));
       case PageIndex.demo3d:
-        return Text('3D demo');
+        return Demo3dPage(key: ValueKey(selectedIndex));
       default:
         return Text('Undefined');
     }
